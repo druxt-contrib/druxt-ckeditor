@@ -199,9 +199,9 @@ export default {
             // Drupal's own integration defaults to the same value when a site
             // sets no commercial key. Without it the editor refuses to start.
             licenseKey: 'GPL',
-            // Never group into a dropdown. A grouped button is still in the
-            // toolbar Drupal configured; hiding it defeats the point of
-            // reading that configuration at all.
+            // Never group into a dropdown. A grouped button is still one
+            // Drupal configured. Hiding it defeats the point of reading that
+            // configuration at all.
             toolbar: { items, shouldNotGroupWhenFull: true },
             // Everything that loaded, not just what the toolbar shows. Markup
             // the schema does not know is stripped on the way in, silently.
