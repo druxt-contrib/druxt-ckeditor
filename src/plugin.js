@@ -1,10 +1,10 @@
 /**
  * The `$druxtCkeditor` plugin, one per app.
  *
- * Where the scripts and the files are is decided here, late, so a site that
- * repoints `$druxt.options.baseUrl` at runtime gets the editor from the new
- * backend on the next load. The Nuxt module only passes options through; the
- * base URL is the Druxt client's.
+ * Where the scripts and the files live is decided here, at call time. So a
+ * site that repoints `$druxt.options.baseUrl` at runtime gets the editor from
+ * the new backend on the next load. The Nuxt module only passes options
+ * through. The base URL is the Druxt client's.
  */
 import { loadCkeditor } from './loader'
 
@@ -14,10 +14,10 @@ export const SCRIPTS_PATH = '/core/assets/vendor/ckeditor5'
 /**
  * Build the plugin object from the resolved options and the Nuxt context.
  *
- * The Druxt client is read from `context.app.$druxt` when the plugin runs
- * inside the app, and from `context.$druxt` when the Druxt plugin has already
- * injected it on the context. Both are checked on every call, because this
- * plugin must not depend on the order the modules were listed in.
+ * The Druxt client sits on `context.app.$druxt` when the plugin runs inside
+ * the app. It sits on `context.$druxt` when the Druxt plugin has already
+ * injected it on the context. Both are checked on every call. This plugin
+ * must not depend on the order the modules were listed in.
  */
 export function createCkeditor(options, context = {}) {
   const client = () =>

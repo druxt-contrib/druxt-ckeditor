@@ -3,8 +3,8 @@
  */
 import { createCkeditor } from '@druxt-contrib/ckeditor'
 
-// Nuxt renders this file as a lodash template; the placeholder becomes the
-// options object as JSON, so the file is not JavaScript until then.
+// Nuxt renders this file as a lodash template. The placeholder becomes the
+// options object as JSON. Until then the file is not JavaScript.
 const options = <%= JSON.stringify(options) %>
 
 export default (context, inject) => {

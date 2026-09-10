@@ -1,10 +1,11 @@
 /**
  * The Nuxt module.
  *
- * Merges the options, registers the component directory and the plugin, and
- * when `copy` is set, serves the editor's scripts from the site's own origin.
- * Everything the component and the plugin need is re-exported here, so a
- * built component imports the package by name and nothing else.
+ * It merges the options and registers the component directory and the
+ * plugin. When `copy` is set, it also serves the editor's scripts from the
+ * site's own origin. Everything the component and the plugin need is
+ * re-exported here. So a built component imports the package by name and
+ * nothing else.
  */
 import { join, resolve } from 'path'
 
