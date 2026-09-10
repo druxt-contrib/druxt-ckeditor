@@ -103,7 +103,6 @@ function downcastApi({ consumed = true, figure = 'img' } = {}) {
 }
 
 test('an image with nowhere to go is held as a data URL', async () => {
-  // eslint-disable-next-line no-undef
   globalThis.FileReader = fakeReader()
   const held = []
   const file = { name: 'a.png', type: 'image/png' }
@@ -118,7 +117,6 @@ test('an image with nowhere to go is held as a data URL', async () => {
 })
 
 test('a token with no field is held too, and hold is optional', async () => {
-  // eslint-disable-next-line no-undef
   globalThis.FileReader = fakeReader()
   const result = await uploadImage(
     { name: 'a.png' },
@@ -128,7 +126,6 @@ test('a token with no field is held too, and hold is optional', async () => {
 })
 
 test('a file the browser cannot read is an error', async () => {
-  // eslint-disable-next-line no-undef
   globalThis.FileReader = fakeReader({ fail: true })
   await assert.rejects(readAsDataUrl({}), /could not be read/)
 })
@@ -312,7 +309,6 @@ test('the downcast does nothing it cannot consume or map', () => {
 })
 
 test('the upload adapter hands the file to uploadImage with the options', async () => {
-  // eslint-disable-next-line no-undef
   globalThis.FileReader = fakeReader()
   const { editor, adapter } = fakeEditor()
   const Plugin = imageUploadAdapter({})

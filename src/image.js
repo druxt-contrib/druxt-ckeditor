@@ -49,7 +49,6 @@ export async function uploadImage(file, options) {
     return { default: dataUrl, held: true }
   }
 
-  // eslint-disable-next-line no-undef
   const fetcher = request || globalThis.fetch
   const response = await fetcher(uploadUrl(backendUrl, resourceType, field), {
     method: 'POST',

@@ -207,9 +207,7 @@ export function loadScript(src, { document, timeout = 15000 } = {}) {
 export async function loadCkeditor({
   base,
   packages = DEFAULT_PACKAGES,
-  // eslint-disable-next-line no-undef
   document = globalThis.document,
-  // eslint-disable-next-line no-undef
   window = globalThis.window,
   timeout,
 } = {}) {
