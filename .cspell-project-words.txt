@@ -62,6 +62,7 @@ pyyaml
 shivammathur
 siroc
 sqlite
+toolbarview
 unparseable
 vfox
 viewports
