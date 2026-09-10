@@ -13,6 +13,7 @@ Nuxt
 actionlint
 autobuild
 automerge
+autop
 behaviour
 bookworm
 ckeditor
