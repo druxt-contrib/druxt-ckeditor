@@ -3,7 +3,7 @@
  *
  * Two questions a decoupled editor has to answer before it writes anything:
  * which buttons the format is configured for, and which filters run when the
- * field is rendered. `editor.mjs` answers the first. This answers the second,
+ * field is rendered. `toolbar.js` answers the first. This answers the second,
  * which decides where a caption belongs and would decide more if more of
  * Drupal's filters changed how content is stored.
  * Neither resource is readable on stock Druxt: `filter_format--filter_format`
