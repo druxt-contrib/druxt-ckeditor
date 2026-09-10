@@ -148,6 +148,12 @@ describe('DruxtCkeditor', () => {
     const { config, host } = created[0]
     expect(host).toBe(wrapper.find('.druxt-ckeditor__host').element)
     expect(config.toolbar.items).toEqual(['bold', '|', 'uploadImage'])
+    // Grouped items are still configured items; a narrow viewport must not
+    // hide them behind a dropdown.
+    expect(config.toolbar.shouldNotGroupWhenFull).toBe(true)
+    // Drupal's own default for a site with no commercial key; without it the
+    // editor refuses to start.
+    expect(config.licenseKey).toBe('GPL')
     expect(config.image.toolbar).toEqual(DEFAULTS.image.toolbar)
     expect(config.ui.viewportOffset).toEqual({ top: 40 })
     // Bold and Image from the namespace, then the two Drupal plugins.

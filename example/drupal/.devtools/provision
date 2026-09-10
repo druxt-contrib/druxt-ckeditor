@@ -84,7 +84,13 @@ PASS('Content types applied.');
 TASK('Enabling the druxt module.');
 drush('pm:enable druxt');
 drush('role:perm:add anonymous %s', 'access druxt resources');
-PASS('druxt enabled; anonymous can access Druxt resources.');
+// The editor reads a format's toolbar from `editor--editor` and its filters
+// from `filter_format--filter_format`. Neither is in the Druxt module's
+// default resource list, and the list is validated as a whole, so it is
+// read, extended and written back rather than set.
+drush('php:eval %s', '$config = \Drupal::configFactory()->getEditable("druxt.settings"); $resources = $config->get("resources") ?: []; foreach (["editor--editor", "filter_format--filter_format"] as $type) { if (!in_array($type, $resources, TRUE)) { $resources[] = $type; } } $config->set("resources", $resources)->save();');
+drush('cache:rebuild');
+PASS('druxt enabled; anonymous can access Druxt resources, editors and formats included.');
 
 echo PHP_EOL;
 echo '===============================' . PHP_EOL;

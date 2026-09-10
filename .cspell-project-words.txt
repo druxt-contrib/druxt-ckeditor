@@ -66,6 +66,7 @@ sanitises
 shivammathur
 siroc
 sqlite
+testid
 toolbarview
 unparseable
 vfox

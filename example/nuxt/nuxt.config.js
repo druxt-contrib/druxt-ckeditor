@@ -26,5 +26,12 @@ const baseUrl =
 
 export default {
   buildModules: ['druxt', '@druxt-contrib/ckeditor'],
-  druxt: { baseUrl },
+  druxt: {
+    baseUrl,
+    ckeditor: {
+      // The backend checkout's own copy, so the generated site carries the
+      // editor and needs no backend to show it.
+      copy: '../drupal/web/core/assets/vendor/ckeditor5',
+    },
+  },
 }
