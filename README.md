@@ -66,16 +66,16 @@ Props:
 
 Under `druxt.ckeditor` in `nuxt.config.js`:
 
-| Option          | Default                                                        | What it does                                                                                    |
-| --------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `scripts`       | `null`                                                         | Where the scripts are. `null` means the backend's own copy, under the Druxt base URL. See below |
-| `copy`          | `false`                                                        | Serve the scripts from the site's own origin. See below                                         |
-| `packages`      | the sixteen Drupal configures for `basic_html` and `full_html` | The CKEditor packages to load, by Drupal's names                                                |
-| `files`         | `{ from: '/sites/default/files/', to: null }`                  | Where a body image's path is rewritten to for the editor. `null` means the backend's copy       |
-| `toolbars`      | `{}`                                                           | A toolbar per format, used when Drupal's configuration cannot be read                           |
-| `filters`       | `{}`                                                           | The filters per format, used when Drupal's configuration cannot be read                         |
-| `image.toolbar` | alt text, caption, three styles                                | What a selected image offers                                                                    |
-| `timeout`       | `15000`                                                        | Milliseconds to wait for each script                                                            |
+| Option          | Default                                                      | What it does                                                                                    |
+| --------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| `scripts`       | `null`                                                       | Where the scripts are. `null` means the backend's own copy, under the Druxt base URL. See below |
+| `copy`          | `false`                                                      | Serve the scripts from the site's own origin. See below                                         |
+| `packages`      | the sixteen packages Drupal's toolbar vocabulary can ask for | The CKEditor packages to load, by Drupal's names                                                |
+| `files`         | `{ from: '/sites/default/files/', to: null }`                | Where a body image's path is rewritten to for the editor. `null` means the backend's copy       |
+| `toolbars`      | `{}`                                                         | A toolbar per format, used when Drupal's configuration cannot be read                           |
+| `filters`       | `{}`                                                         | The filters per format, used when Drupal's configuration cannot be read                         |
+| `image.toolbar` | alt text, caption, three styles                              | What a selected image offers                                                                    |
+| `timeout`       | `15000`                                                      | Milliseconds to wait for each script                                                            |
 
 Everything is also on `this.$druxtCkeditor`: `options`, `scripts()`,
 `files()`, `backendUrl()` and `load()`, which resolves to the `CKEditor5`

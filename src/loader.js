@@ -56,8 +56,8 @@ export const DEFAULT_PACKAGES = [
  * Not derived from the configured buttons, and the difference is not academic.
  * A CKEditor plugin decides what the editor *understands*; the toolbar only
  * decides what it *offers*. Markup the schema does not know about is stripped
- * on the way in, silently: opening this site's own article with the image
- * plugins left out emptied all five pictures out of the body, and staging that
+ * on the way in, silently. Opening a site's own article with the image
+ * plugins left out emptied every picture out of the body, and saving that
  * would have deleted them.
  *
  * So the plugin set is fixed and the toolbar is filtered separately. The

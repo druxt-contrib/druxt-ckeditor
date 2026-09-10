@@ -7,9 +7,10 @@
  * buttons the site was configured for rather than a set someone guessed, and a
  * change made in Drupal reaches the frontend without a deploy.
  *
- * That resource needs `administer filters` to read, so it is only available to
- * an authenticated author, which is the only time an editor is on screen
- * anyway. Anonymous gets the fallback.
+ * `editor--editor` is not in Druxt's default resource list. A site ticks it in
+ * Druxt's configurable list (#3309969) and grants `access druxt resources`,
+ * and then any session can read it, anonymous included. Where a site has not,
+ * the read is empty or refused and the fallback answers.
  */
 
 import { SUPPORTED_BUTTONS } from './loader'

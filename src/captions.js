@@ -14,9 +14,9 @@
  * tests.
  */
 
-/** Images and media that carry a caption, with the attribute in either quote. */
 import { CAPTION_FILTER } from './formats'
 
+/** Images and media that carry a caption, with the attribute in either quote. */
 const CAPTIONED =
   /<(img|drupal-media)\b[^>]*\bdata-caption\s*=\s*("([^"]*)"|'([^']*)')[^>]*>/gi
 
@@ -61,7 +61,7 @@ export function decodeAttribute(value) {
  * CKEditor keeps a caption as a `<figcaption>` inside `<figure class="image">`
  * and knows nothing about `data-caption`: an attribute it has no schema for is
  * dropped on the way in, so an article opened for editing came back with every
- * caption gone, silently, and staging that committed the loss.
+ * caption gone, silently, and saving that would have kept the loss.
  *
  * Translated here rather than in a downcast converter. Doing it in the pipeline
  * means overriding the converter that builds the image's figure, which is one

@@ -75,8 +75,8 @@ test('an unknown format falls back rather than rendering nothing', () => {
 })
 
 test('no configuration at all falls back', () => {
-  // The anonymous case: `editor--editor` needs `administer filters`, so a
-  // visitor gets an empty collection rather than an error.
+  // A site that has not ticked `editor--editor` in the resource list. The
+  // read answers an empty collection rather than an error.
   assert.deepEqual(toolbarFor([], 'basic_html'), FALLBACK_TOOLBAR)
   assert.deepEqual(toolbarFor(null, 'basic_html'), FALLBACK_TOOLBAR)
 })
@@ -120,9 +120,9 @@ test('the buttons the classic build lacked are offered now', () => {
 })
 
 test('the build can supply a toolbar when Drupal will not', () => {
-  // `editor--editor` needs `administer filters`, which the scope an author
-  // signs in with does not grant, so it answers with an empty collection and
-  // the committed configuration is what the editor gets built from.
+  // `editor--editor` is not ticked in the resource list, so the read answers
+  // an empty collection. The committed configuration is what the editor gets
+  // built from.
   const configured = [
     'bold',
     'italic',

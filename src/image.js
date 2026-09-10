@@ -30,10 +30,11 @@ import { uploadHeaders, uploadUrl } from './upload'
 /**
  * Send one file and describe what came back.
  *
- * Returns the URL to show and the uuid to record. Absolute, because the editor
- * has to display the picture and a Drupal relative path would resolve against
- * the frontend, which does not serve it. `relativeFileUrls` puts it back before
- * anything is staged, so what gets committed is Drupal's own path.
+ * Returns the URL to show and the uuid to record. The URL is absolute. The
+ * editor has to display the picture, and a Drupal relative path would resolve
+ * against the frontend, which does not serve it. `storedFileUrls` in
+ * `files.js` puts the path back before the value is stored, so what Drupal
+ * keeps is its own path.
  */
 export async function uploadImage(file, options) {
   const { backendUrl, token, resourceType, field, request, hold } =
