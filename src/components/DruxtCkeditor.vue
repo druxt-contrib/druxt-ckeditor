@@ -15,11 +15,11 @@
  * A CKEditor 5 field on Drupal's own build.
  *
  * A textarea until the editor is created, and still a textarea if it never
- * is. Losing formatting buttons is a worse editor; losing the field is a lost
- * edit. The editor is created directly rather than through
- * `@ckeditor/ckeditor5-vue2`, which assigns `editor.isReadOnly`: CKEditor 5
- * removed the setter, so the adapter throws before it subscribes to changes
- * and every keystroke is silently dropped.
+ * is. Losing formatting buttons is a worse editor. Losing the field is a
+ * lost edit. The editor is created directly, not through
+ * `@ckeditor/ckeditor5-vue2`. That adapter assigns `editor.isReadOnly`, and
+ * CKEditor 5 removed the setter. So the adapter throws before it subscribes
+ * to changes, and every keystroke is silently dropped.
  */
 import {
   DrupalImageCompatibility,
@@ -153,9 +153,10 @@ export default {
     /**
      * Drupal's stored markup, in the shape CKEditor edits.
      *
-     * Two differences, both of which cost content if left: the file path is
-     * one this origin may not serve, and a caption lives in an attribute the
-     * editor's schema does not know and would drop.
+     * Two things differ, and both cost content if left alone. The file path
+     * may be one this origin does not serve. And a caption lives in an
+     * attribute the editor's schema does not know, so the editor would drop
+     * it.
      */
     intoEditor(value) {
       const html = this.captioned ? toEditorCaptions(value || '') : value || ''
@@ -196,7 +197,7 @@ export default {
           this.$refs.host,
           {
             toolbar: { items },
-            // Everything that loaded, not just what the toolbar shows: markup
+            // Everything that loaded, not just what the toolbar shows. Markup
             // the schema does not know is stripped on the way in, silently.
             plugins: [
               ...editorPlugins(namespace),
