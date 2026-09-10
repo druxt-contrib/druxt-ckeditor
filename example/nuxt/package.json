@@ -1,5 +1,5 @@
 {
-  "name": "druxt-module-template-example",
+  "name": "druxt-ckeditor-example",
   "version": "0.0.0",
   "scripts": {
     "build": "nuxt build",
@@ -8,9 +8,9 @@
     "start": "nuxt start"
   },
   "dependencies": {
+    "@druxt-contrib/ckeditor": "file:../..",
     "consola": "2.15.3",
     "druxt": "^0.21.0",
-    "druxt-module-template": "file:../..",
     "nuxt": "2.15.8"
   },
   "private": true,

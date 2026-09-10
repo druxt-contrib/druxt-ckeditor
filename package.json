@@ -1,10 +1,12 @@
 {
-  "name": "druxt-module-template",
+  "name": "@druxt-contrib/ckeditor",
   "version": "0.0.0",
-  "description": "Starting point for a Druxt module. Conforms to the Druxt repository standard.",
+  "description": "Mounts the CKEditor 5 build Drupal ships in a Druxt frontend.",
   "keywords": [
     "druxt",
-    "module"
+    "nuxt",
+    "ckeditor",
+    "drupal"
   ],
   "license": "MIT",
   "exports": {
@@ -93,5 +95,8 @@
   "jest-junit": {
     "outputDirectory": "reports/junit",
     "outputName": "junit.xml"
+  },
+  "peerDependencies": {
+    "druxt": "^0.21.0"
   }
 }

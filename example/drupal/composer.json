@@ -1,6 +1,6 @@
 {
-    "name": "druxt/module-template-example-backend",
-    "description": "The Drupal backend for the module template's example application.",
+    "name": "druxt/ckeditor-example-backend",
+    "description": "The Drupal backend for the DruxtCkeditor example application.",
     "type": "project",
     "license": "MIT",
     "repositories": [

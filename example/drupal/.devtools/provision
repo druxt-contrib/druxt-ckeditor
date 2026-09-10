@@ -26,7 +26,7 @@ require_once __DIR__ . '/helpers.php';
 // Variables.
 // -----------------------------------------------------------------------------
 
-$db_file = resolve_env_value('DB_FILE', '/tmp/druxt-module-template-drupal-site.sqlite')[0];
+$db_file = resolve_env_value('DB_FILE', '/tmp/druxt-ckeditor-drupal-site.sqlite')[0];
 
 // -----------------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ file_put_contents('web/sites/default/settings.local.php', sprintf(
 PASS('SQLite database configured.');
 
 TASK('Running drush site:install standard.');
-drush('site:install standard --site-name=%s', 'druxt-module-template');
+drush('site:install standard --site-name=%s', 'druxt-ckeditor');
 PASS('Site installed.');
 
 // Drupal 11's `standard` profile no longer creates content types itself -

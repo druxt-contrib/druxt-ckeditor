@@ -2,8 +2,7 @@
 import DruxtModule from 'druxt/dist/components/DruxtModule.vue'
 
 export default {
-  // @TODO - Rename your module's component name.
-  name: 'DruxtModuleComponent',
+  name: 'DruxtCkeditor',
 
   extends: DruxtModule,
 

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DruxtModuleComponent Hello world 1`] = `
+exports[`DruxtCkeditor Hello world 1`] = `
 Object {
   "$attrs": Object {
     "foo": "bar",
@@ -8,9 +8,9 @@ Object {
   },
   "is": "DruxtWrapper",
   "options": Array [
-    "DruxtModuleComponentBarDefault",
-    "DruxtModuleComponentBar",
-    "DruxtModuleComponentDefault",
+    "DruxtCkeditorBarDefault",
+    "DruxtCkeditorBar",
+    "DruxtCkeditorDefault",
   ],
   "props": Object {},
   "propsData": Object {

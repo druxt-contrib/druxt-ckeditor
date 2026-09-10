@@ -2,7 +2,7 @@ import 'regenerator-runtime/runtime'
 import { createLocalVue, mount } from '@vue/test-utils'
 
 import DruxtWrapper from 'druxt/dist/components/DruxtWrapper.vue'
-import DruxtModuleComponent from '../../src/components/DruxtModuleComponent.vue'
+import DruxtCkeditor from '../../src/components/DruxtCkeditor.vue'
 
 // Setup local vue instance.
 const localVue = createLocalVue()
@@ -10,7 +10,7 @@ localVue.component('DruxtWrapper', DruxtWrapper)
 
 // Mount the Vue component.
 const mountComponent = function () {
-  return mount(DruxtModuleComponent, {
+  return mount(DruxtCkeditor, {
     localVue,
     mocks: {
       $fetchState: { pending: true },
@@ -19,7 +19,7 @@ const mountComponent = function () {
   })
 }
 
-describe('DruxtModuleComponent', () => {
+describe('DruxtCkeditor', () => {
   test('Hello world', async () => {
     // Mount the component.
     const wrapper = mountComponent()

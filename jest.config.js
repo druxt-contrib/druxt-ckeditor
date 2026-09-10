@@ -21,6 +21,11 @@ module.exports = {
   },
   coveragePathIgnorePatterns: ['/dist/', '/node_modules/'],
   moduleFileExtensions: ['js', 'json', 'vue'],
+  // The component imports the package by name, the way it does from
+  // dist/components/ once published. Jest reads the source instead.
+  moduleNameMapper: {
+    '^@druxt-contrib/ckeditor$': '<rootDir>/src/index.js',
+  },
   modulePathIgnorePatterns: ['/example/'],
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: ['/example/', '/test/e2e/'],

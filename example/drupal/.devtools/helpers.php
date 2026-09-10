@@ -304,7 +304,7 @@ function server_pid_file(): string {
   // repo on the machine, letting one checkout's `stop` kill another
   // checkout's server (the pidfile written last wins). cwd is stable
   // here - every .devtools script runs from drupal/.
-  return sprintf('/tmp/druxt-module-template-drupal-php-server-%s.pid', hash('sha256', (string) getcwd()));
+  return sprintf('/tmp/druxt-ckeditor-drupal-php-server-%s.pid', hash('sha256', (string) getcwd()));
 }
 
 /**

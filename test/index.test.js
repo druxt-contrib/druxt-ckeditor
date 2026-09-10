@@ -7,7 +7,7 @@ const options = {
 
 let mock
 
-describe('DruxtModule Nuxt module', () => {
+describe('DruxtCkeditor Nuxt module', () => {
   beforeEach(() => {
     mock = {
       addModule: jest.fn(),

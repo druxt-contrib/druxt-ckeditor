@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Druxt Module component example</h1>
-    <DruxtModuleComponent />
+    <h1>DruxtCkeditor example</h1>
+    <DruxtCkeditor />
   </div>
 </template>
