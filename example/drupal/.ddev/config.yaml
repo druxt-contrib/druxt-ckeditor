@@ -1,0 +1,6 @@
+name: druxt-module-template
+type: drupal
+docroot: web
+php_version: "8.4"
+webserver_type: nginx-fpm
+xdebug_enabled: false
