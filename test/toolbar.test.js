@@ -104,7 +104,7 @@ test("Drupal's image button is renamed, not dropped", () => {
 
 test('the buttons the classic build lacked are offered now', () => {
   // The whole point of assembling the editor from DLL builds: every one of
-  // these is configured on this site's full_html and used to be filtered out.
+  // these is configured on a site's full_html and used to be filtered out.
   const gained = [
     'code',
     'codeBlock',
