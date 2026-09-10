@@ -15,6 +15,7 @@ function nuxtMock({
   const mock = {
     addPlugin: jest.fn(),
     addServerMiddleware: jest.fn(),
+    extendBuild: jest.fn(),
     nuxt: {
       hook: jest.fn((name, fn) => {
         hooks[name] = fn
@@ -133,5 +134,18 @@ describe('DruxtCkeditor Nuxt module', () => {
     expect(
       fs.readdirSync(join(distPath, 'ckeditor5', 'ckeditor5-dll'))
     ).toEqual(['ckeditor5-dll.js'])
+  })
+
+  test('the client build gets an empty fs module', () => {
+    const { mock } = nuxtMock()
+    NuxtModule.call(mock, {})
+    expect(mock.extendBuild).toHaveBeenCalledTimes(1)
+    const extend = mock.extendBuild.mock.calls[0][0]
+    const client = {}
+    extend(client, { isClient: true })
+    expect(client.node).toEqual({ fs: 'empty' })
+    const server = { node: false }
+    extend(server, { isClient: false })
+    expect(server.node).toBe(false)
   })
 })

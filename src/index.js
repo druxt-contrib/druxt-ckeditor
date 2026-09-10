@@ -69,6 +69,13 @@ export function resolveOptions(moduleOptions = {}, nuxtOptions = {}) {
 const NuxtModule = function (moduleOptions = {}) {
   const options = resolveOptions(moduleOptions, this.options)
 
+  // The client bundle carries this file, because the component imports the
+  // package by name. A browser build cannot resolve `fs`, and the copy
+  // branch below never runs there. So the client build gets an empty `fs`.
+  this.extendBuild((config, { isClient }) => {
+    if (isClient) config.node = { ...(config.node || {}), fs: 'empty' }
+  })
+
   this.nuxt.hook('components:dirs', (dirs) => {
     dirs.push({ path: join(__dirname, 'components') })
   })
