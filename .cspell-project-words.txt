@@ -60,6 +60,7 @@ opcache
 opencode
 pdo
 pyyaml
+sanitises
 shivammathur
 siroc
 sqlite
