@@ -9,8 +9,13 @@
  */
 import { join, resolve } from 'path'
 
-// prettier-ignore
-import { COPY_PATH, copyScripts, presentSources, scriptMiddleware, scriptSources } from './copy'
+import {
+  COPY_PATH,
+  copyScripts,
+  presentSources,
+  scriptMiddleware,
+  scriptSources,
+} from './copy'
 import { DRUPAL_FILES } from './files'
 import { DEFAULT_PACKAGES } from './loader'
 

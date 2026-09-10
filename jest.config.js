@@ -32,7 +32,15 @@ module.exports = {
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: ['/example/', '/test/e2e/'],
   transform: {
-    '^.+\\.(js)$': 'esbuild-jest',
+    // Files under src/ are the ones coverage is collected from. esbuild-jest
+    // drops the sourcemap's sourcesContent, which leaves v8 coverage blaming
+    // real lines for bundler-injected code, so they go through the local
+    // transformer. See scripts/jest-esbuild-transform.js.
+    '^.+/src/.+\\.js$': '<rootDir>/scripts/jest-esbuild-transform.js',
+    // Everything else, the tests included, stays on esbuild-jest. It runs
+    // babel first when a file calls jest.mock(), which hoists the mock above
+    // the imports. The local transformer does not.
+    '^.+\\.js$': 'esbuild-jest',
     '^.+\\.(mjs)$': 'esbuild-jest',
     '^.+\\.(vue)$': 'vue-jest',
   },

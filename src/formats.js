@@ -6,6 +6,7 @@
  * field is rendered. `toolbar.js` answers the first. This answers the second,
  * which decides where a caption belongs and would decide more if more of
  * Drupal's filters changed how content is stored.
+ *
  * Neither resource is readable on stock Druxt: `filter_format--filter_format`
  * needs `administer filters`, which is not a permission to hand an author,
  * because it also lets them rewrite the formats. Druxt's configurable resource
