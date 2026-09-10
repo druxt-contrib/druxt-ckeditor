@@ -320,6 +320,39 @@ test('the upload adapter hands the file to uploadImage with the options', async 
   assert.equal(instance.abort(), undefined)
 })
 
+test('the upload adapter reads a function for its options at upload time', async () => {
+  globalThis.FileReader = fakeReader()
+  const { editor, adapter } = fakeEditor()
+  let options = {}
+  const Plugin = imageUploadAdapter(() => options)
+  new Plugin(editor).init()
+  const first = await adapter()({
+    file: Promise.resolve({ name: 'a.png' }),
+  }).upload()
+  assert.equal(first.held, true)
+  const sent = []
+  options = {
+    backendUrl: 'https://b.test',
+    token: 't',
+    resourceType: 'node--article',
+    field: 'field_image',
+    request: async (url, init) => {
+      sent.push({ url, init })
+      return {
+        ok: true,
+        json: async () => ({
+          data: { id: 'u-1', attributes: { uri: { url: '/x.png' } } },
+        }),
+      }
+    },
+  }
+  const second = await adapter()({
+    file: Promise.resolve({ name: 'b.png' }),
+  }).upload()
+  assert.equal(sent.length, 1)
+  assert.notEqual(second.held, true)
+})
+
 test('a finished upload stamps the uuid on the image', () => {
   const { editor, written, listeners } = fakeEditor()
   new (imageUploadAdapter({}))(editor).afterInit()

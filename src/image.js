@@ -121,8 +121,12 @@ export class DrupalImageCompatibility {
  *
  * Separate from the compatibility plugin on purpose: uploading is the optional
  * half, and understanding what is already there is not.
+ *
+ * `options` may be a function. It is read each time a file is uploaded, so a
+ * token that arrives after the editor was created still reaches the request.
  */
 export function imageUploadAdapter(options) {
+  const current = () => (typeof options === 'function' ? options() : options)
   return class DecoupledImageUpload {
     constructor(editor) {
       this.editor = editor
@@ -133,7 +137,7 @@ export function imageUploadAdapter(options) {
         loader
       ) => ({
         async upload() {
-          return uploadImage(await loader.file, options)
+          return uploadImage(await loader.file, current())
         },
         // Nothing to call off: the request is already in flight or it is not.
         abort() {},

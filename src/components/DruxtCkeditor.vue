@@ -208,7 +208,7 @@ export default {
             plugins: [
               ...editorPlugins(namespace),
               DrupalImageCompatibility,
-              imageUploadAdapter(this.uploadOptions),
+              imageUploadAdapter(() => this.uploadOptions),
             ],
             // What appears when an image is selected. Left empty, CKEditor
             // warns and a selected image offers nothing, alt text included.
