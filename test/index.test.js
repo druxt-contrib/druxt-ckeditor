@@ -144,6 +144,9 @@ describe('DruxtCkeditor Nuxt module', () => {
     const client = {}
     extend(client, { isClient: true })
     expect(client.node).toEqual({ fs: 'empty' })
+    const configured = { node: { __dirname: false } }
+    extend(configured, { isClient: true })
+    expect(configured.node).toEqual({ __dirname: false, fs: 'empty' })
     const server = { node: false }
     extend(server, { isClient: false })
     expect(server.node).toBe(false)
