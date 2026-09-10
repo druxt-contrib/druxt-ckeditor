@@ -2,6 +2,7 @@ import assert from 'assert/strict'
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
+import { Readable } from 'stream'
 
 import {
   COPY_PATH,
@@ -137,6 +138,33 @@ test('the middleware serves a known script and passes everything else on', () =>
     handler({ url: '/link/link.js?v=1' }, res, () =>
       assert.fail('a known script was passed on')
     )
+  })
+})
+
+test('a failed read is passed on rather than thrown', () => {
+  const failure = new Error('gone')
+  const read = () =>
+    new Readable({
+      read() {
+        this.destroy(failure)
+      },
+    })
+  const handler = scriptMiddleware([{ name: 'link', source: '/x/link.js' }], {
+    read,
+  })
+  const res = {
+    setHeader: () => {},
+    write: () => {},
+    end: () => {},
+    on: () => {},
+    once: () => {},
+    emit: () => {},
+  }
+  return new Promise((resolve) => {
+    handler({ url: '/link/link.js' }, res, (error) => {
+      assert.equal(error, failure)
+      resolve()
+    })
   })
 })
 
