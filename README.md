@@ -1,8 +1,8 @@
 # DruxtCkeditor
 
-Mounts the CKEditor 5 build Drupal ships in a [Druxt](https://druxtjs.org)
+Mounts Drupal's own CKEditor 5 build in a [Druxt](https://druxtjs.org)
 frontend. The editor a content author sees is the one Drupal is configured
-with: the same plugins, the same toolbar, the same text format.
+with, down to the plugins it loads and the toolbar it shows.
 
 ## Install
 
