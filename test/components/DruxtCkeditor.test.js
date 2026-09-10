@@ -1,40 +1,16 @@
 import 'regenerator-runtime/runtime'
-import { createLocalVue, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 
-import DruxtWrapper from 'druxt/dist/components/DruxtWrapper.vue'
 import DruxtCkeditor from '../../src/components/DruxtCkeditor.vue'
 
-// Setup local vue instance.
-const localVue = createLocalVue()
-localVue.component('DruxtWrapper', DruxtWrapper)
-
-// Mount the Vue component.
-const mountComponent = function () {
-  return mount(DruxtCkeditor, {
-    localVue,
-    mocks: {
-      $fetchState: { pending: true },
-      $route: { meta: { lang: undefined } },
-    },
-  })
-}
-
 describe('DruxtCkeditor', () => {
-  test('Hello world', async () => {
-    // Mount the component.
-    const wrapper = mountComponent()
+  test('shows the value in a textarea', () => {
+    const wrapper = mount(DruxtCkeditor, { propsData: { value: '<p>Hi</p>' } })
+    expect(wrapper.find('textarea').element.value).toBe('<p>Hi</p>')
+  })
 
-    // Simulate the Nuxt fetch hook.
-    await wrapper.vm.$options.fetch.call(wrapper.vm)
-
-    // Assert data and props are as expected.
-    expect(wrapper.vm.foo).toBe('bar')
-    expect(wrapper.vm.component).toMatchSnapshot()
-
-    // Assert slots.
-    const h = jest.fn()
-    const slots = wrapper.vm.$options.druxt.slots(h)
-    slots.default()
-    expect(h).toBeCalledWith('div', ['Hello world'])
+  test('starts empty', () => {
+    const wrapper = mount(DruxtCkeditor)
+    expect(wrapper.find('textarea').element.value).toBe('')
   })
 })

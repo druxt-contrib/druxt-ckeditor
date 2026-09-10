@@ -2,15 +2,17 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: ['src/**/*.{js,vue}'],
   coverageDirectory: './coverage/',
+  // The babel provider cannot instrument a component that has both a
+  // <template> and a <script> block. vue-jest's source map covers the script
+  // half only. The render function's branches are dropped and the whole file
+  // counts as one covered statement. v8 reads coverage from the engine and
+  // does not need that source map.
+  coverageProvider: 'v8',
   // A floor, not a target. These are the measured baseline of this template's
   // own tests, rounded down: raise them as coverage genuinely improves, and
   // never lower them to make a merge request pass. Collecting coverage without
   // a threshold is the shape this replaces, and it enforces nothing while
   // looking like it does.
-  //
-  // Branches sits below 100 because esbuild's transform emits interop branches
-  // in the compiled output that no test can reach. Measured, not guessed: run
-  // `npm test` and read the table before changing these.
   coverageThreshold: {
     global: {
       statements: 100,
