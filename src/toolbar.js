@@ -93,7 +93,6 @@ export function usableToolbar(configured) {
 
 /**
  * The toolbar for a format, as CKEditor wants it.
- *
  */
 export function toolbarFor(resources, format) {
   const editor = editorForFormat(resources, format)
@@ -108,14 +107,15 @@ export function toolbarFor(resources, format) {
 /**
  * The items Drupal configured for a format, read through the Druxt store.
  *
- * The store is what a page's `fetch()` fills at generate time and what the
- * payload carries, so a static page can answer with no backend at all.
- * Reading `editor--editor` needs the resource ticked in the Druxt module's
- * resource list; where it is not, the collection is empty or the read is
- * refused, and this yields nothing so the caller can fall through.
+ * A page's `fetch()` fills the store at generate time. The payload carries
+ * it to the browser. So a static page can answer with no backend at all.
  *
- * Not `toolbarFor`: that substitutes the fallback when it finds nothing, and
- * the caller has a better answer than that in its options.
+ * Reading `editor--editor` needs that resource ticked in the Druxt module's
+ * resource list. Without it the collection is empty or the read is refused.
+ * Either way this yields nothing and the caller falls through.
+ *
+ * This is not `toolbarFor`. That one substitutes the fallback when it finds
+ * nothing. The caller here has a better answer in its options.
  */
 export async function configuredToolbar(store, format) {
   if (!store) return []
