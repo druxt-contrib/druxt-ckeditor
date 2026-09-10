@@ -62,6 +62,8 @@ export default {
     editor: null,
     /** Drupal's answer on the format's filters, or null while it has none. */
     liveFilters: null,
+    /** Set by beforeDestroy(), for create() to check when it resumes. */
+    gone: false,
   }),
 
   computed: {
@@ -146,6 +148,7 @@ export default {
   },
 
   beforeDestroy() {
+    this.gone = true
     if (this.editor) this.editor.destroy().catch(() => {})
   },
 
@@ -217,6 +220,12 @@ export default {
             initialData: this.intoEditor(this.value),
           }
         )
+        if (this.gone) {
+          // Destroyed while the editor was being created. Nobody will call
+          // beforeDestroy again, so tidy up here and say nothing.
+          await editor.destroy().catch(() => {})
+          return
+        }
         editor.model.document.on('change:data', () => {
           this.$emit('input', this.outOfEditor(editor.getData()))
         })

@@ -196,6 +196,28 @@ describe('DruxtCkeditor', () => {
     expect(editor.destroy).toHaveBeenCalled()
   })
 
+  test('an editor created after the component was destroyed is destroyed too', async () => {
+    const namespace = fakeNamespace([])
+    let editor
+    let resolveCreate
+    namespace.editorClassic.ClassicEditor.create = jest.fn((host, config) => {
+      editor = fakeEditor(config)
+      return new Promise((resolve) => {
+        resolveCreate = () => resolve(editor)
+      })
+    })
+    loader.loadCkeditor.mockResolvedValue(namespace)
+    const wrapper = mountEditor({ store: storeWith() })
+    await flush()
+    await flush()
+    wrapper.destroy()
+    resolveCreate()
+    await flush()
+    await flush()
+    expect(editor.destroy).toHaveBeenCalled()
+    expect(wrapper.emitted('ready')).toBeUndefined()
+  })
+
   test('falls back to the options, then the built-in list, when the store cannot answer', async () => {
     const created = []
     loader.loadCkeditor.mockResolvedValue(fakeNamespace(created))
