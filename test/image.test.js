@@ -8,6 +8,12 @@ import {
   uploadImage,
 } from '../src/image'
 
+const originalFileReader = globalThis.FileReader
+
+afterEach(() => {
+  globalThis.FileReader = originalFileReader
+})
+
 /** A FileReader that answers with a fixed result, or fails. */
 function fakeReader({
   result = 'data:image/png;base64,AAAA',
