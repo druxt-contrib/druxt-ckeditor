@@ -36,6 +36,7 @@
     "example:start": "cd example/drupal && .devtools/start",
     "example:stop": "cd example/drupal && .devtools/stop",
     "hooks:install": "git config core.hooksPath .githooks",
+    "postinstall": "node scripts/postinstall.mjs",
     "lint": "npm run lint:js && npm run lint:format && npm run lint:md && npm run lint:cspell && npm run lint:private && npm run lint:attribution && npm run lint:knip",
     "lint:attribution": "bash .gitlab/scripts/check-attribution.sh",
     "lint:audit": "npm audit --omit=dev --audit-level=high",
@@ -49,7 +50,6 @@
     "lint:private": "node scripts/lint-private-refs.mjs",
     "lint:prose": "PROSE_LINT_GLOB='!{.changeset,example/drupal}/**' bash .gitlab/scripts/lint-prose.sh --all",
     "lint:prose:install": "bash .gitlab/scripts/install-vale.sh .vale/bin .vale/styles",
-    "postinstall": "node scripts/postinstall.mjs",
     "serve": "node scripts/serve.js example/nuxt/dist 3000",
     "test": "jest",
     "test:e2e": "playwright test --grep-invert @visual",
@@ -85,6 +85,9 @@
     "vue-jest": "3.0.7",
     "vue-template-compiler": "2.7.16"
   },
+  "peerDependencies": {
+    "druxt": ">=0.21.0"
+  },
   "packageManager": "npm@8.19.4",
   "engines": {
     "node": ">=16.20.1"
@@ -95,8 +98,5 @@
   "jest-junit": {
     "outputDirectory": "reports/junit",
     "outputName": "junit.xml"
-  },
-  "peerDependencies": {
-    "druxt": "^0.21.0"
   }
 }
