@@ -20,7 +20,7 @@ import { join, resolve } from 'path'
 import { CORE } from './loader'
 
 /** Where the module serves the scripts from the site's own origin. */
-export const COPY_PATH = '/ckeditor5'
+export { COPY_PATH } from './plugin'
 
 /** The npm package and build file for one of Drupal's package names. */
 function packageFile(name) {

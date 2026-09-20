@@ -1,6 +1,6 @@
 import assert from 'assert/strict'
 
-import { createCkeditor, SCRIPTS_PATH } from '../src/plugin'
+import { COPY_PATH, createCkeditor, SCRIPTS_PATH } from '../src/plugin'
 import { DEFAULTS } from '../src/index'
 import * as loader from '../src/loader'
 
@@ -67,6 +67,31 @@ test('an explicit URL on another host wins', () => {
     from: '/sites/default/files/',
     to: '/files/',
   })
+})
+
+test('a site that copies the builds serves them from its own origin', () => {
+  // Copying and then pointing at the backend would be two settings that have
+  // to agree. It also has to work with no backend: a site staging edits
+  // offline still opens the editor.
+  const plugin = createCkeditor(
+    { ...DEFAULTS, copy: true },
+    context('https://drupal.example.com')
+  )
+  assert.equal(plugin.scripts(), COPY_PATH)
+})
+
+test('a copying site with no backend still has somewhere to load from', () => {
+  const plugin = createCkeditor({ ...DEFAULTS, copy: true }, {})
+  assert.equal(plugin.backendUrl(), null)
+  assert.equal(plugin.scripts(), COPY_PATH)
+})
+
+test('an explicit URL still beats the copy', () => {
+  const plugin = createCkeditor(
+    { ...DEFAULTS, copy: true, scripts: 'https://cdn.example.net/ckeditor5' },
+    context('https://drupal.example.com')
+  )
+  assert.equal(plugin.scripts(), 'https://cdn.example.net/ckeditor5')
 })
 
 test('with no client there is nowhere to load from', () => {

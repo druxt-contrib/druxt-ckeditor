@@ -12,6 +12,14 @@ import { loadCkeditor } from './loader'
 export const SCRIPTS_PATH = '/core/assets/vendor/ckeditor5'
 
 /**
+ * Where the module serves its own copy of the builds, under the site's origin.
+ *
+ * Declared here rather than beside the copying, because the plugin has to read
+ * it and the copying imports `path`, which has no business in a browser.
+ */
+export const COPY_PATH = '/ckeditor5'
+
+/**
  * Build the plugin object from the resolved options and the Nuxt context.
  *
  * The Druxt client sits on `context.app.$druxt` when the plugin runs inside
@@ -34,9 +42,22 @@ export function createCkeditor(options, context = {}) {
     /** The backend's origin, or null with no client. */
     backendUrl: () => base(),
 
-    /** Where the scripts come from: the option, or the backend's copy. */
+    /**
+     * Where the scripts come from.
+     *
+     * The option wins. Then this site's own copy, if the module was asked to
+     * make one: a site that copies the builds wants to serve them, and
+     * pointing at the backend instead would be a second setting that has to
+     * agree with the first. It also means the editor still loads with no
+     * backend connected, which is the whole point of staging edits offline.
+     *
+     * The backend's copy last, which is right when nothing was copied: the
+     * builds match the Drupal that will render the result.
+     */
     scripts: () =>
-      options.scripts || (base() ? `${base()}${SCRIPTS_PATH}` : null),
+      options.scripts ||
+      (options.copy ? COPY_PATH : null) ||
+      (base() ? `${base()}${SCRIPTS_PATH}` : null),
 
     /** Where the files are shown from: the option, or the backend's copy. */
     files: () => {
