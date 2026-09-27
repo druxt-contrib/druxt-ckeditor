@@ -253,6 +253,42 @@ test('a refusal with no body carries the status', async () => {
   )
 })
 
+test('called with no options at all is held', async () => {
+  globalThis.FileReader = fakeReader()
+  const result = await uploadImage({ name: 'a.png' })
+  assert.equal(result.held, true)
+})
+
+test('an upload error with no response surfaces its message', async () => {
+  const request = {
+    post: async () => {
+      throw new Error('Network down')
+    },
+  }
+  await assert.rejects(
+    uploadImage(
+      { name: 'a.png' },
+      { backendUrl: 'https://b.test', field: 'f', request }
+    ),
+    /Network down/
+  )
+})
+
+test('an upload that throws nothing useful still fails cleanly', async () => {
+  const request = {
+    post: async () => {
+      throw undefined
+    },
+  }
+  await assert.rejects(
+    uploadImage(
+      { name: 'a.png' },
+      { backendUrl: 'https://b.test', field: 'f', request }
+    ),
+    /The image upload failed/
+  )
+})
+
 test('a Drupal file URL is made absolute against the backend', () => {
   assert.equal(
     absolute('/sites/default/files/a.png', 'https://b.test/'),

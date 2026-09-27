@@ -36,4 +36,6 @@ test('a filename cannot break out of its header', () => {
   assert.equal(safeFilename('../../etc/passwd'), 'passwd')
   assert.equal(safeFilename(''), 'upload')
   assert.equal(safeFilename(null), 'upload')
+  // Stripped to nothing after cleaning still falls back.
+  assert.equal(safeFilename('/'), 'upload')
 })
