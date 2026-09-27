@@ -67,6 +67,9 @@ export function resolveOptions(moduleOptions = {}, nuxtOptions = {}) {
     files: { ...DEFAULTS.files, ...(configured.files || {}) },
     image: { ...DEFAULTS.image, ...(configured.image || {}) },
   }
+  // The same copy-to-scripts default lives in plugin.js `scripts()`, for a
+  // plugin built directly from options this function did not merge. Keep the
+  // two in step.
   if (options.copy && !options.scripts) options.scripts = COPY_PATH
   return options
 }

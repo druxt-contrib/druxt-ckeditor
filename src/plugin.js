@@ -53,6 +53,10 @@ export function createCkeditor(options, context = {}) {
      *
      * The backend's copy last, which is right when nothing was copied: the
      * builds match the Drupal that will render the result.
+     *
+     * `resolveOptions` in index.js sets the same copy-to-scripts default when
+     * the module merges its options; this chain answers for a plugin built
+     * from options directly. Keep the two in step.
      */
     scripts: () =>
       options.scripts ||

@@ -81,6 +81,14 @@ Everything is also on `this.$druxtCkeditor`: `options`, `scripts()`,
 `files()`, `backendUrl()` and `load()`, which resolves to the `CKEditor5`
 namespace or `null`.
 
+## Exports
+
+The supported surface is the `DruxtCkeditor` component, the Nuxt module (the
+package's default export), and the `$druxtCkeditor` plugin. The package also
+exports the functions these are built from, so a built component can import
+them by name. Those are internal: shared between this module's own files,
+not an API to build against, and they can change in any release.
+
 ## Script sources
 
 Three sources, and the difference is what happens when the backend is not
