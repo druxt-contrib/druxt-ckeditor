@@ -46,8 +46,6 @@ export default {
     format: { type: String, default: 'basic_html' },
     /** Where an inserted image's bytes go: `{ resourceType, field }`. */
     upload: { type: Object, default: null },
-    /** A bearer token for the upload; without one the image is held. */
-    token: { type: String, default: null },
     /** The backend to upload to, when it is not the Druxt base URL. */
     backendUrl: { type: String, default: null },
     /** An explicit toolbar, which wins over every lookup. */
@@ -108,14 +106,17 @@ export default {
 
     /**
      * What the upload adapter needs. Never null: an image can be inserted
-     * with no backend and no token, and is held until there is one.
+     * with no backend and no session, and is held until there is one.
      */
     uploadOptions() {
       return {
         backendUrl: this.backend,
-        token: this.token,
         resourceType: (this.upload || {}).resourceType,
         field: (this.upload || {}).field,
+        // The Druxt client's axios carries the signed-in bearer token and
+        // refreshes it, once a site adds druxt-auth. Without a session the
+        // request is unauthenticated and the image is held.
+        request: (this.$druxt || {}).axios || null,
         hold: (file, dataUrl) => this.$emit('hold', { file, dataUrl }),
       }
     },

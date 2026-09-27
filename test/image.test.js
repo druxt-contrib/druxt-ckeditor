@@ -122,13 +122,36 @@ test('an image with nowhere to go is held as a data URL', async () => {
   assert.deepEqual(held, [[file, 'data:image/png;base64,AAAA']])
 })
 
-test('a token with no field is held too, and hold is optional', async () => {
+test('no field is held too, and hold is optional', async () => {
   globalThis.FileReader = fakeReader()
   const result = await uploadImage(
     { name: 'a.png' },
-    { backendUrl: 'https://b.test', token: 't' }
+    { backendUrl: 'https://b.test' }
   )
   assert.equal(result.held, true)
+})
+
+test('an upload with no usable session holds the image', async () => {
+  globalThis.FileReader = fakeReader()
+  const held = []
+  const request = {
+    post: async () => {
+      const error = new Error('Unauthorized')
+      error.response = { status: 401 }
+      throw error
+    },
+  }
+  const result = await uploadImage(
+    { name: 'a.png' },
+    {
+      backendUrl: 'https://b.test',
+      field: 'f',
+      request,
+      hold: (f, dataUrl) => held.push([f, dataUrl]),
+    }
+  )
+  assert.equal(result.held, true)
+  assert.equal(held.length, 1)
 })
 
 test('a file the browser cannot read is an error', async () => {
@@ -138,22 +161,22 @@ test('a file the browser cannot read is an error', async () => {
 
 test('the bytes go to the field and the answer is absolute', async () => {
   const requests = []
-  const request = async (url, init) => {
-    requests.push([url, init])
-    return {
-      ok: true,
-      json: async () => ({
+  const request = {
+    post: async (url, body, config) => {
+      requests.push([url, body, config])
+      return {
         data: {
-          id: 'uuid-1',
-          attributes: { uri: { url: '/sites/default/files/a.png' } },
+          data: {
+            id: 'uuid-1',
+            attributes: { uri: { url: '/sites/default/files/a.png' } },
+          },
         },
-      }),
-    }
+      }
+    },
   }
   const file = { name: 'a.png' }
   const result = await uploadImage(file, {
     backendUrl: 'https://b.test/',
-    token: 't',
     resourceType: 'node--article',
     field: 'field_image',
     request,
@@ -162,64 +185,69 @@ test('the bytes go to the field and the answer is absolute', async () => {
     default: 'https://b.test/sites/default/files/a.png',
     uuid: 'uuid-1',
   })
+  // Relative path: the client's axios resolves it against its own backend.
+  assert.equal(requests[0][0], '/jsonapi/node/article/field_image')
+  assert.equal(requests[0][1], file)
   assert.equal(
-    requests[0][0],
-    'https://b.test/jsonapi/node/article/field_image'
+    requests[0][2].headers['Content-Disposition'],
+    'file; filename="a.png"'
   )
-  assert.equal(requests[0][1].method, 'POST')
-  assert.equal(requests[0][1].body, file)
-  assert.equal(requests[0][1].headers.Authorization, 'Bearer t')
+  assert.equal(requests[0][2].headers.Authorization, undefined)
 })
 
 test('a flat url attribute and a missing id are tolerated', async () => {
-  const request = async () => ({
-    ok: true,
-    json: async () => ({
-      data: { attributes: { url: 'https://cdn.test/a.png' } },
+  const request = {
+    post: async () => ({
+      data: { data: { attributes: { url: 'https://cdn.test/a.png' } } },
     }),
-  })
+  }
   const result = await uploadImage(
     { name: 'a.png' },
-    { backendUrl: 'https://b.test', token: 't', field: 'f', request }
+    { backendUrl: 'https://b.test', field: 'f', request }
   )
   assert.deepEqual(result, { default: 'https://cdn.test/a.png', uuid: '' })
-  const empty = async () => ({ ok: true, json: async () => null })
+  const empty = { post: async () => ({ data: null }) }
   assert.deepEqual(
     await uploadImage(
       { name: 'a.png' },
-      { backendUrl: 'https://b.test', token: 't', field: 'f', request: empty }
+      { backendUrl: 'https://b.test', field: 'f', request: empty }
     ),
     { default: '', uuid: '' }
   )
 })
 
 test("a refused upload carries Drupal's reason", async () => {
-  const request = async () => ({
-    ok: false,
-    status: 415,
-    json: async () => ({ errors: [{ detail: 'Not that kind of file.' }] }),
-  })
+  const request = {
+    post: async () => {
+      const error = new Error('Request failed')
+      error.response = {
+        status: 415,
+        data: { errors: [{ detail: 'Not that kind of file.' }] },
+      }
+      throw error
+    },
+  }
   await assert.rejects(
     uploadImage(
       { name: 'a.png' },
-      { backendUrl: 'https://b.test', token: 't', field: 'f', request }
+      { backendUrl: 'https://b.test', field: 'f', request }
     ),
     /Not that kind of file/
   )
 })
 
 test('a refusal with no body carries the status', async () => {
-  const request = async () => ({
-    ok: false,
-    status: 500,
-    json: async () => {
-      throw new Error('not json')
+  const request = {
+    post: async () => {
+      const error = new Error('Request failed')
+      error.response = { status: 500 }
+      throw error
     },
-  })
+  }
   await assert.rejects(
     uploadImage(
       { name: 'a.png' },
-      { backendUrl: 'https://b.test', token: 't', field: 'f', request }
+      { backendUrl: 'https://b.test', field: 'f', request }
     ),
     /refused with 500/
   )
@@ -339,17 +367,15 @@ test('the upload adapter reads a function for its options at upload time', async
   const sent = []
   options = {
     backendUrl: 'https://b.test',
-    token: 't',
     resourceType: 'node--article',
     field: 'field_image',
-    request: async (url, init) => {
-      sent.push({ url, init })
-      return {
-        ok: true,
-        json: async () => ({
-          data: { id: 'u-1', attributes: { uri: { url: '/x.png' } } },
-        }),
-      }
+    request: {
+      post: async (url) => {
+        sent.push({ url })
+        return {
+          data: { data: { id: 'u-1', attributes: { uri: { url: '/x.png' } } } },
+        }
+      },
     },
   }
   const second = await adapter()({

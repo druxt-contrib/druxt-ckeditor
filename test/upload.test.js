@@ -10,25 +10,23 @@ import { safeFilename, uploadHeaders, uploadUrl } from '../src/upload'
 
 test('the bytes go to the field, not to the file collection', () => {
   assert.equal(
-    uploadUrl('https://b.test', 'node--article', 'field_image'),
-    'https://b.test/jsonapi/node/article/field_image'
+    uploadUrl('node--article', 'field_image'),
+    '/jsonapi/node/article/field_image'
   )
 })
 
-test('a trailing slash on the backend does not double up', () => {
-  assert.ok(
-    uploadUrl('https://b.test/', 'node--article', 'field_image').startsWith(
-      'https://b.test/jsonapi/'
-    )
-  )
+test('the url is relative, so it rides the Druxt client to its own backend', () => {
+  assert.ok(uploadUrl('node--article', 'field_image').startsWith('/jsonapi/'))
 })
 
-test('the request is bytes, not a document', () => {
-  const headers = uploadHeaders('photo.png', 'tok')
+test('the request is bytes, not a document, and sets no Authorization itself', () => {
+  const headers = uploadHeaders('photo.png')
   // JSON:API's own media type here is a 415.
   assert.equal(headers['Content-Type'], 'application/octet-stream')
   assert.equal(headers['Content-Disposition'], 'file; filename="photo.png"')
-  assert.equal(headers.Authorization, 'Bearer tok')
+  assert.equal(headers.Accept, 'application/vnd.api+json')
+  // The Druxt client's axios adds the bearer token, not this.
+  assert.equal(headers.Authorization, undefined)
 })
 
 test('a filename cannot break out of its header', () => {

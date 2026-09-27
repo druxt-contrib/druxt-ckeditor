@@ -291,7 +291,6 @@ describe('DruxtCkeditor', () => {
     const wrapper = mountEditor({
       props: {
         upload: { resourceType: 'node--article', field: 'field_image' },
-        token: 't',
         backendUrl: 'https://other.example.com',
       },
       store: storeWith(),
@@ -300,7 +299,6 @@ describe('DruxtCkeditor', () => {
     await flush()
     expect(wrapper.vm.uploadOptions).toMatchObject({
       backendUrl: 'https://other.example.com',
-      token: 't',
       resourceType: 'node--article',
       field: 'field_image',
     })

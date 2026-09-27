@@ -12,11 +12,16 @@
  * itself, but it is also not saved.
  */
 
-/** Where the bytes go: the field's own route, not the file collection. */
-export function uploadUrl(backendUrl, resourceType, field) {
+/**
+ * Where the bytes go: the field's own route, not the file collection.
+ *
+ * Relative, so it goes through the Druxt client's axios against its backend
+ * base, which is the origin the signed-in token belongs to.
+ */
+export function uploadUrl(resourceType, field) {
   const [entityType, bundle] = String(resourceType).split('--')
   const path = bundle ? `${entityType}/${bundle}` : entityType
-  return `${String(backendUrl).replace(/\/+$/, '')}/jsonapi/${path}/${field}`
+  return `/jsonapi/${path}/${field}`
 }
 
 /**
@@ -36,12 +41,11 @@ export function safeFilename(name) {
   return cleaned || 'upload'
 }
 
-export function uploadHeaders(filename, token) {
+export function uploadHeaders(filename) {
   return {
     // Not the JSON:API media type: this request is the bytes themselves.
     'Content-Type': 'application/octet-stream',
     'Content-Disposition': `file; filename="${safeFilename(filename)}"`,
     Accept: 'application/vnd.api+json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   }
 }

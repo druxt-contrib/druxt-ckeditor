@@ -56,8 +56,7 @@ Props:
 | `value`          | `''`         | The stored HTML                                                         |
 | `format`         | `basic_html` | The Drupal text format, which picks the toolbar and the filters         |
 | `upload`         | `null`       | `{ resourceType, field }` naming where an inserted image's bytes go     |
-| `token`          | `null`       | A bearer token for the upload; without one the image is held            |
-| `backendUrl`     | `null`       | Where to upload to, when it is not the Druxt base URL                   |
+| `backendUrl`     | `null`       | The backend serving content files, when it is not the Druxt base URL    |
 | `toolbar`        | `null`       | An explicit toolbar, which wins over every lookup                       |
 | `filters`        | `null`       | The filters the format runs, which wins over every lookup               |
 | `viewportOffset` | `0`          | How far down the page the editor treats as the top, for a pinned header |
@@ -129,9 +128,10 @@ payload carries it. Reading `editor--editor` and
 `filter_format--filter_format` needs both ticked in the Druxt module's
 resource list on the backend, and `access druxt resources` for whoever asks.
 Where they cannot be read, `toolbars` and `filters` in the options answer,
-and after them the built-in toolbar. An inserted image with no `token` is
-held as a data URL in the HTML and reported through `hold`, so nothing is
-lost.
+and after them the built-in toolbar. An inserted image is uploaded over
+JSON:API through the Druxt client, which carries the signed-in session's
+bearer token once a site adds the `druxt-auth` module. With no session the
+image is held as a data URL and reported through `hold`, so nothing is lost.
 
 ## Example
 

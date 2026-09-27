@@ -14,6 +14,7 @@ actionlint
 autobuild
 automerge
 autop
+axios
 behaviour
 bookworm
 ckeditor

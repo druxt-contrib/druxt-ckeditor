@@ -4,13 +4,13 @@
  * CKEditor knows how to take a dropped file and where to put the picture; it
  * does not know where the bytes go. That is an upload adapter, and without one
  * the image button is a button that fails. Drupal ships its own adapter that
- * posts to a route behind a session, which is no use here: this frontend is a
- * static site holding a bearer token, and the backend may not even be the one
- * that built it.
+ * posts behind a cookie session, which is no use here: a decoupled frontend
+ * authenticates with a bearer token, held and refreshed by the Druxt client
+ * once a site adds the druxt-auth module.
  *
- * So the bytes go over JSON:API, the same way `upload.js` already sends a
- * field's image, and the markup that comes out is the markup Drupal's own
- * editor writes.
+ * So the bytes go over JSON:API through that client's axios, the same way
+ * `upload.js` describes, and the markup that comes out is the markup Drupal's
+ * own editor writes.
  *
  * Two things about that markup matter, both established against a running
  * Drupal rather than from the documentation.
@@ -37,45 +37,46 @@ import { uploadHeaders, uploadUrl } from './upload'
  * keeps is its own path.
  */
 export async function uploadImage(file, options) {
-  const { backendUrl, token, resourceType, field, request, hold } =
-    options || {}
+  const { backendUrl, resourceType, field, request, hold } = options || {}
 
-  // Nowhere to send it yet: hold the bytes with the change instead of refusing.
-  // Editing works with no backend, and an image is the one thing that used to
-  // need one before you could even put it on the page. What the editor shows
-  // until then is the file itself, read in the browser.
-  if (!backendUrl || !token || !field) {
+  // What the editor shows when the bytes cannot be sent: the file itself, read
+  // in the browser, held with the change instead of refused. Editing works
+  // before sign-in and on a static build with no backend.
+  const held = async () => {
     const dataUrl = await readAsDataUrl(file)
     if (typeof hold === 'function') hold(file, dataUrl)
     return { default: dataUrl, held: true }
   }
 
-  const fetcher = request || globalThis.fetch
-  const response = await fetcher(uploadUrl(backendUrl, resourceType, field), {
-    method: 'POST',
-    headers: uploadHeaders(file.name, token),
-    body: file,
-  })
+  // Nowhere to send it: no field to post to, or no Druxt client to post with.
+  if (!field || !request) return held()
 
-  if (!response.ok) {
-    const detail = await response.json().catch(() => null)
-    const reason =
-      (detail &&
-        detail.errors &&
-        detail.errors[0] &&
-        detail.errors[0].detail) ||
-      `The image was refused with ${response.status}.`
-    throw new Error(reason)
+  let response
+  try {
+    response = await request.post(uploadUrl(resourceType, field), file, {
+      headers: uploadHeaders(file.name),
+    })
+  } catch (error) {
+    // No usable session: the site has no druxt-auth, or nobody is signed in.
+    // Hold, the same as having no backend, rather than fail the insertion.
+    const status = ((error || {}).response || {}).status
+    if (status === 401 || status === 403) return held()
+    throw new Error(uploadReason(error))
   }
 
-  const body = await response.json()
-  const data = (body || {}).data || {}
+  const data = (response.data || {}).data || {}
   const url =
     ((data.attributes || {}).uri || {}).url || (data.attributes || {}).url || ''
-  return {
-    default: absolute(url, backendUrl),
-    uuid: data.id || '',
-  }
+  return { default: absolute(url, backendUrl), uuid: data.id || '' }
+}
+
+/** Drupal's own reason for refusing an upload, else the status, else the error. */
+function uploadReason(error) {
+  const response = (error || {}).response || {}
+  const first = (((response.data || {}).errors || [])[0] || {}).detail
+  if (first) return first
+  if (response.status) return `The image was refused with ${response.status}.`
+  return (error || {}).message || 'The image upload failed.'
 }
 
 /** A Drupal file URL the built site can actually fetch. */
@@ -123,7 +124,7 @@ export class DrupalImageCompatibility {
  * half, and understanding what is already there is not.
  *
  * `options` may be a function. It is read each time a file is uploaded, so a
- * token that arrives after the editor was created still reaches the request.
+ * session established after the editor was created still reaches the request.
  */
 export function imageUploadAdapter(options) {
   const current = () => (typeof options === 'function' ? options() : options)
