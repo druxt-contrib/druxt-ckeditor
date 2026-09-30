@@ -7,7 +7,7 @@
 # The same site .devtools/provision builds without Docker, on DDEV's MySQL.
 set -euo pipefail
 composer install
-drush -y site:install --site-name='druxt-module-template' standard
+drush -y site:install --site-name='druxt-ckeditor' standard
 drush -y recipe:apply /var/www/html/web/core/recipes/article_content_type
 drush -y recipe:apply /var/www/html/web/core/recipes/page_content_type
 drush -y cache:rebuild

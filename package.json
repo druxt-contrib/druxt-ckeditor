@@ -1,10 +1,12 @@
 {
-  "name": "druxt-module-template",
+  "name": "@druxt-contrib/ckeditor",
   "version": "0.0.0",
-  "description": "Starting point for a Druxt module. Conforms to the Druxt repository standard.",
+  "description": "Mounts the CKEditor 5 build Drupal ships in a Druxt frontend.",
   "keywords": [
     "druxt",
-    "module"
+    "nuxt",
+    "ckeditor",
+    "drupal"
   ],
   "license": "MIT",
   "exports": {
@@ -47,7 +49,6 @@
     "lint:private": "node scripts/lint-private-refs.mjs",
     "lint:prose": "PROSE_LINT_GLOB='!{.changeset,example/drupal}/**' bash .gitlab/scripts/lint-prose.sh --all",
     "lint:prose:install": "bash .gitlab/scripts/install-vale.sh .vale/bin .vale/styles",
-    "postinstall": "node scripts/postinstall.mjs",
     "serve": "node scripts/serve.js example/nuxt/dist 3000",
     "test": "jest",
     "test:e2e": "playwright test --grep-invert @visual",
@@ -66,6 +67,7 @@
     "babel-core": "7.0.0-bridge.0",
     "cspell": "7.3.9",
     "druxt": "0.21.0",
+    "esbuild": "0.28.2",
     "esbuild-jest": "0.5.0",
     "eslint": "8.28.0",
     "eslint-config-prettier": "8.10.0",
@@ -77,11 +79,13 @@
     "knip": "2.43.0",
     "markdownlint-cli2": "0.10.0",
     "prettier": "3.3.3",
-    "regenerator-runtime": "0.14.1",
     "siroc": "0.16.0",
     "vue": "2.7.16",
     "vue-jest": "3.0.7",
     "vue-template-compiler": "2.7.16"
+  },
+  "peerDependencies": {
+    "druxt": ">=0.21.0 <2"
   },
   "packageManager": "npm@8.19.4",
   "engines": {

@@ -66,7 +66,7 @@ $cwd = (string) getcwd();
 // blocks forever waiting for a pipe that's still held open, even though
 // the actual PHP server started and is serving requests just fine.
 passthru(sprintf(
-  '(cd %s/web && exec nohup php%s -S %s:%s -t . .ht.router.php </dev/null >/tmp/druxt-module-template-drupal-php-server.log 2>&1) & echo $! > %s',
+  '(cd %s/web && exec nohup php%s -S %s:%s -t . .ht.router.php </dev/null >/tmp/druxt-ckeditor-drupal-php-server.log 2>&1) & echo $! > %s',
   escapeshellarg($cwd),
   $xdebug_flags,
   escapeshellarg($webserver_host),
@@ -89,7 +89,7 @@ for ($i = 0; $i < $webserver_wait_timeout; $i++) {
 }
 echo PHP_EOL;
 if (!$ready) {
-  $log = @file_get_contents('/tmp/druxt-module-template-drupal-php-server.log') ?: '';
+  $log = @file_get_contents('/tmp/druxt-ckeditor-drupal-php-server.log') ?: '';
   FAIL('Unable to start inbuilt PHP server' . ($log !== '' ? "\n" . $log : ''));
 }
 PASS('Server started successfully.');
@@ -105,7 +105,7 @@ $alive = $pid !== '' && ctype_digit($pid) && (function_exists('posix_kill')
   ? @posix_kill((int) $pid, 0)
   : is_dir('/proc/' . $pid));
 if (!$alive) {
-  FAIL('The PHP server exited after starting. Check the log at /tmp/druxt-module-template-drupal-php-server.log.');
+  FAIL('The PHP server exited after starting. Check the log at /tmp/druxt-ckeditor-drupal-php-server.log.');
 }
 $port_owners = [];
 @exec(sprintf('lsof -ti:%s 2>/dev/null', escapeshellarg($webserver_port)), $port_owners);

@@ -19,3 +19,6 @@ example/drupal/vendor/
 example/drupal/web/
 example/nuxt/dist/
 example/nuxt/.nuxt/
+
+# Lodash templates Nuxt renders; the placeholder is not JavaScript.
+templates/

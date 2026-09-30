@@ -1,13 +1,24 @@
-# Words this project uses that the standard dictionaries do not carry.
 # Add a term here rather than switching the check off for a file.
+# Words this project uses that the standard dictionaries do not carry.
+Autobuild
+CKEditor
+Codespaces
+DDEV
+DLLs
+Druxt
+Ksection
+Lando
+Licence
+Nuxt
 actionlint
 autobuild
-Autobuild
 automerge
+autop
+axios
 behaviour
 bookworm
+ckeditor
 cloudflared
-Codespaces
 colour
 commitlint
 consola
@@ -15,14 +26,14 @@ corepack
 cspell
 davidanson
 dbaeumer
-DDEV
 devcontainer
 devcontainers
 druxt
-Druxt
 druxtjs
 esbenp
 esbuild
+figcaption
+firewalled
 freetype
 gitleaks
 hverlin
@@ -30,8 +41,6 @@ hyperscript
 interruptible
 jsonapi
 knip
-Ksection
-Lando
 libfreetype
 libicu
 libjpeg
@@ -40,13 +49,11 @@ libpng
 libsqlite
 libxml
 libzip
-Licence
 lndo
 markdownlint
 mise
 networkidle
 nproc
-Nuxt
 nuxt
 nvm
 nvmrc
@@ -54,10 +61,16 @@ opcache
 opencode
 pdo
 pyyaml
+repointed
+repoints
+sanitises
 shivammathur
 siroc
 sqlite
+testid
+toolbarview
 unparseable
 vfox
 viewports
+wysiwyg
 yamllint

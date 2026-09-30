@@ -60,9 +60,8 @@ npm run build
 echo "Provisioning and starting the example backend, then installing the example..."
 npm run example:setup
 
-# npm install enables the hooks via scripts/postinstall.mjs. Repeated here for
-# the case where the container was built with install scripts disabled, which
-# is a common hardening default.
+# Enable the committed git hooks. This is a per-clone setting, so it is not
+# carried by the repository and is not run on a consumer's install.
 echo "Enabling git hooks..."
 git config core.hooksPath .githooks
 
