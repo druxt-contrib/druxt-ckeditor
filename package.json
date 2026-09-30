@@ -36,7 +36,6 @@
     "example:start": "cd example/drupal && .devtools/start",
     "example:stop": "cd example/drupal && .devtools/stop",
     "hooks:install": "git config core.hooksPath .githooks",
-    "postinstall": "node scripts/postinstall.mjs",
     "lint": "npm run lint:js && npm run lint:format && npm run lint:md && npm run lint:cspell && npm run lint:private && npm run lint:attribution && npm run lint:knip",
     "lint:attribution": "bash .gitlab/scripts/check-attribution.sh",
     "lint:audit": "npm audit --omit=dev --audit-level=high",
