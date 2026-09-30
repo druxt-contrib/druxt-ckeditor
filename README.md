@@ -129,9 +129,12 @@ payload carries it. Reading `editor--editor` and
 resource list on the backend, and `access druxt resources` for whoever asks.
 Where they cannot be read, `toolbars` and `filters` in the options answer,
 and after them the built-in toolbar. An inserted image is uploaded over
-JSON:API through the Druxt client, which carries the signed-in session's
-bearer token once a site adds the `druxt-auth` module. With no session the
-image is held as a data URL and reported through `hold`, so nothing is lost.
+JSON:API through the Druxt client. With the `druxt-auth` module installed the
+request carries the signed-in session's bearer token, refreshed when it
+expires. Without a session the image is held as a data URL and reported
+through `hold`, and the editor still edits, so nothing is lost. `druxt-auth`
+is not a dependency of this module: the authentication is picked up at runtime
+when it is present.
 
 ## Example
 
