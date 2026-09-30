@@ -231,6 +231,26 @@ test:unit:
   # visible to a reviewer who was never going to open the job log.
   coverage: '/All files\s*\|\s*([\d.]+)/'
 
+test:pack:
+  extends: .node
+  stage: test
+  needs: []
+  script:
+    - section_start "build" "Building the module"
+    - npm run build
+    - section_end "build"
+    - section_start "pack" "Packing and installing the tarball"
+    # A published install runs the package's own scripts and reads its files
+    # allowlist; a file:/link install and the unit tests do neither, so this is
+    # the only job that proves the package a consumer downloads can install.
+    - npm pack
+    - mkdir -p "$CI_PROJECT_DIR/pack-check" && mv ./*.tgz "$CI_PROJECT_DIR/pack-check/pkg.tgz"
+    - cd "$CI_PROJECT_DIR/pack-check" && npm init -y > /dev/null
+    - npm install ./pkg.tgz --legacy-peer-deps --no-audit --no-fund
+    - test -f node_modules/@druxt-contrib/ckeditor/dist/index.ssr.js
+    - test -f node_modules/@druxt-contrib/ckeditor/templates/plugin.js
+    - section_end "pack"
+
 #
 # --- Example ---
 #
