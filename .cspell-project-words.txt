@@ -1,24 +1,17 @@
 # Add a term here rather than switching the check off for a file.
 # Words this project uses that the standard dictionaries do not carry.
-Autobuild
-CKEditor
-Codespaces
-DDEV
-DLLs
-Druxt
-Ksection
-Lando
-Licence
-Nuxt
 actionlint
+Autobuild
 autobuild
 automerge
 autop
 axios
 behaviour
 bookworm
+CKEditor
 ckeditor
 cloudflared
+Codespaces
 colour
 commitlint
 consola
@@ -26,8 +19,11 @@ corepack
 cspell
 davidanson
 dbaeumer
+DDEV
 devcontainer
 devcontainers
+DLLs
+Druxt
 druxt
 druxtjs
 esbenp
@@ -41,6 +37,8 @@ hyperscript
 interruptible
 jsonapi
 knip
+Ksection
+Lando
 libfreetype
 libicu
 libjpeg
@@ -49,12 +47,16 @@ libpng
 libsqlite
 libxml
 libzip
+Licence
+llms
 lndo
 markdownlint
 mise
 networkidle
 nproc
+Nuxt
 nuxt
+nuxtjs
 nvm
 nvmrc
 opcache
