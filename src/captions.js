@@ -21,7 +21,50 @@ const CAPTIONED =
   /<(img|drupal-media)\b[^>]*\bdata-caption\s*=\s*("([^"]*)"|'([^']*)')[^>]*>/gi
 
 /** The attribute itself, so it can be taken back out of the tag. */
-const CAPTION_ATTRIBUTE = /\s*\bdata-caption\s*=\s*("[^"]*"|'[^']*')/i
+const CAPTION_ATTRIBUTE = /\bdata-caption\s*=\s*("[^"]*"|'[^']*')/i
+
+/** One whitespace character, tested one at a time rather than as a run. */
+const WHITESPACE = /\s/
+
+/**
+ * How far back the whitespace immediately before `index` runs.
+ *
+ * Walked rather than matched. A `\s*` written in front of a pattern gives the
+ * engine a run it can start inside at every offset, so it costs the square of
+ * that run's length, and this markup arrives from a body field. Reading past
+ * the start of a string gives `undefined`, which is not whitespace, so the
+ * walk stops there without a bound of its own.
+ */
+function whitespaceStart(text, index) {
+  let start = index
+  while (WHITESPACE.test(text[start - 1])) start -= 1
+  return start
+}
+
+/**
+ * A tag with its caption attribute, and the space that separated it, removed.
+ *
+ * `CAPTIONED` matched this tag on the same attribute pattern, so the match
+ * here is certain.
+ */
+function withoutCaption(tag) {
+  const found = CAPTION_ATTRIBUTE.exec(tag)
+  const start = whitespaceStart(tag, found.index)
+  return tag.slice(0, start) + tag.slice(found.index + found[0].length)
+}
+
+/**
+ * The same image tag carrying a caption attribute.
+ *
+ * The tag ends in `>`, because that is how it was matched. A self-closing
+ * slash and the whitespace in front of it are dropped: Drupal stores the tag
+ * the way its own filter writes it.
+ */
+function withCaption(tag, text) {
+  const close = tag[tag.length - 2] === '/' ? tag.length - 2 : tag.length - 1
+  const start = whitespaceStart(tag, close)
+  return `${tag.slice(0, start)} data-caption="${encodeAttribute(text)}">`
+}
 
 /**
  * An attribute value back into the markup it stands for.
@@ -77,7 +120,7 @@ export function toEditorCaptions(html) {
     CAPTIONED,
     (tag, _name, _quoted, double, single) => {
       const caption = double !== undefined ? double : single || ''
-      const stripped = tag.replace(CAPTION_ATTRIBUTE, '')
+      const stripped = withoutCaption(tag)
       return `<figure class="image">${stripped}<figcaption>${decodeAttribute(caption)}</figcaption></figure>`
     }
   )
@@ -100,7 +143,7 @@ export function fromEditorCaptions(html) {
     const { img, caption } = args[args.length - 1]
     const text = String(caption).trim()
     if (!text) return figure
-    return img.replace(/\s*\/?>$/, ` data-caption="${encodeAttribute(text)}">`)
+    return withCaption(img, text)
   })
 }
 

@@ -7,6 +7,7 @@
  * through. The base URL is the Druxt client's.
  */
 import { loadCkeditor } from './loader'
+import { withoutTrailingSlash } from './url'
 
 /** Where Drupal serves the CKEditor 5 builds, under the site's base URL. */
 export const SCRIPTS_PATH = '/core/assets/vendor/ckeditor5'
@@ -33,7 +34,7 @@ export function createCkeditor(options, context = {}) {
   const base = () => {
     const druxt = client()
     const url = druxt && druxt.options ? druxt.options.baseUrl : null
-    return url ? String(url).replace(/\/+$/, '') : null
+    return url ? withoutTrailingSlash(url) : null
   }
 
   const plugin = {

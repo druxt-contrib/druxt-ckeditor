@@ -60,3 +60,32 @@ test('a format nobody could look up is assumed to run the filter', () => {
   assert.equal(captionsAreAttributes({}, 'unknown'), true)
   assert.equal(captionsAreAttributes(null, 'unknown'), true)
 })
+
+test('a self-closing image keeps neither the slash nor the space before it', () => {
+  // CKEditor writes `<img ... />` in some configurations, and Drupal's own
+  // filter writes `<img ...>`. A caption added to the first shape has to
+  // produce the second, or the value never matches what was stored and the
+  // field reports an edit nobody made.
+  assert.equal(
+    fromEditorCaptions(
+      '<figure class="image"><img src="/a.png" /><figcaption>Hi</figcaption></figure>'
+    ),
+    '<img src="/a.png" data-caption="Hi">'
+  )
+})
+
+test('whitespace before the closing bracket is not kept', () => {
+  assert.equal(
+    fromEditorCaptions(
+      '<figure class="image"><img src="/a.png"   ><figcaption>Hi</figcaption></figure>'
+    ),
+    '<img src="/a.png" data-caption="Hi">'
+  )
+})
+
+test('a caption attribute separated by more than one space is removed with them', () => {
+  assert.equal(
+    toEditorCaptions('<img src="/a.png"   data-caption="Hi">'),
+    '<figure class="image"><img src="/a.png"><figcaption>Hi</figcaption></figure>'
+  )
+})

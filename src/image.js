@@ -26,6 +26,7 @@
  */
 
 import { uploadHeaders, uploadUrl } from './upload'
+import { withoutTrailingSlash } from './url'
 
 /**
  * Send one file and describe what came back.
@@ -83,7 +84,7 @@ function uploadReason(error) {
 export function absolute(url, backendUrl) {
   if (!url) return ''
   if (/^https?:\/\//i.test(url)) return url
-  return `${String(backendUrl).replace(/\/+$/, '')}${url.startsWith('/') ? '' : '/'}${url}`
+  return `${withoutTrailingSlash(backendUrl)}${url.startsWith('/') ? '' : '/'}${url}`
 }
 
 /**

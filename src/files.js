@@ -8,6 +8,8 @@
  * be what Drupal stores. Pure, so the rewriting is testable without an editor.
  */
 
+import { withoutTrailingSlash } from './url'
+
 /** Where Drupal serves public files from. */
 export const DRUPAL_FILES = '/sites/default/files/'
 
@@ -36,7 +38,7 @@ export function isDrupalFile(url, from = DRUPAL_FILES) {
 
 /** A backend's origin with no trailing slash, or null. */
 function origin(backendUrl) {
-  return backendUrl ? String(backendUrl).replace(/\/+$/, '') : null
+  return backendUrl ? withoutTrailingSlash(backendUrl) : null
 }
 
 /**

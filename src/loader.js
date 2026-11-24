@@ -15,6 +15,8 @@
  * over a megabyte, and a reader who never edits should never pay for them.
  */
 
+import { withoutTrailingSlash } from './url'
+
 /**
  * The core, which every other script attaches itself to, and so loads first.
  *
@@ -142,7 +144,7 @@ export const SUPPORTED_BUTTONS = Object.keys(BUTTON_PLUGINS)
 
 /** One script's URL under a base, in the layout Drupal serves. */
 export function scriptUrl(base, name) {
-  return `${String(base).replace(/\/+$/, '')}/${name}/${name}.js`
+  return `${withoutTrailingSlash(base)}/${name}/${name}.js`
 }
 
 /**
