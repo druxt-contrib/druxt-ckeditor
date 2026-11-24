@@ -7,9 +7,10 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
+  # No branch filter: a pull request into any base runs CI, so a stacked
+  # pull request that targets the branch below it is tested too.
   pull_request:
-    branches: [main]
 
 permissions:
   contents: read

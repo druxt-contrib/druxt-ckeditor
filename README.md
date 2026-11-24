@@ -1,92 +1,147 @@
-# Druxt module template
+# @druxt-contrib/ckeditor
 
-Starting point for a [Druxt](https://druxtjs.org) module, and the reference
-module for the Druxt repository standard.
+Mounts Drupal's own CKEditor 5 build in a Druxt frontend.
 
-Start something new from it, or bring an existing module up
-to the same footing. They are different jobs and the second is the more common
-one.
+Drupal builds CKEditor 5 as a set of DLL scripts under
+`core/assets/vendor/ckeditor5`, one per package, and configures a toolbar per
+text format. This module loads those scripts and reads that configuration
+through the Druxt store. Then it mounts the editor on a field. Nothing from
+`@ckeditor/*` is installed in the frontend, so the editor is the one the
+site's authors already use, at the version the backend runs.
 
-## Starting a new module
+## Install
 
-1. Create a repository from this template.
-2. `npm install`. That installs dependencies and enables the git hooks.
-3. Rename things: `package.json`'s `name`, the component in
-   `src/components/`, and the `@TODO` in it.
-4. `npm test` and `npm run lint` should both pass before you change anything.
-
-## Bringing an existing module up
-
-Do not copy this repository over yours. Run the conformance checker against
-your module and work the gap list it prints:
-
-```bash
-python3 check-standards.py --standard standards.yml \
-  --repos-root .. --repo <your-module>
+```sh
+npm install @druxt-contrib/ckeditor
 ```
 
-It reports every requirement, whether your repository meets it, and why not
-when it does not. The gaps are independent, so they can be closed one merge
-request at a time rather than in one pass that is impossible to review. Copying
-wholesale is worse than it looks, because you inherit this template's coverage floor and its dictionary, and neither describes your module. The floor has to be measured from your own tests.
+Then add it to `buildModules` in `nuxt.config.js`, next to `druxt`:
 
-## What you get
-
-|              |                                                                                              |
-| ------------ | -------------------------------------------------------------------------------------------- |
-| Build        | siroc, producing ESM and SSR bundles                                                         |
-| Unit tests   | Jest, with an enforced coverage floor                                                        |
-| Visual tests | Playwright against the example application, three viewports, committed baselines             |
-| Lint         | ESLint, Prettier, markdownlint, cspell, yamllint, knip                                       |
-| Secrets      | gitleaks, with a canary that proves the scanner still detects                                |
-| Commits      | Conventional Commits, checked by a hook and over the merge-request range                     |
-| CI           | GitLab and GitHub Actions, running the same set                                              |
-| Preview      | A manual job serving the example application through a Cloudflare tunnel and posting the URL |
-| Releases     | Changesets                                                                                   |
-| Environment  | A devcontainer for VS Code, Codespaces and DevPod                                            |
-
-## Commands
-
-```bash
-npm install            # dependencies, and enables the git hooks
-npm run build          # build the module
-npm test               # unit tests, coverage floor enforced
-npm run lint           # every linter except prose
-npm run lint:prose     # Vale, after `npm run lint:prose:install` once
-npm run example:setup  # Drupal 11 backend on SQLite, then the example's dependencies
-npm run example:dev    # the example on http://localhost:3000
-npm run test:e2e       # Playwright against the example, backend up
+```js
+export default {
+  buildModules: ['druxt', '@druxt-contrib/ckeditor'],
+  druxt: {
+    baseUrl: 'https://drupal.example.com',
+    ckeditor: {
+      // Options, all optional.
+    },
+  },
+}
 ```
 
-`.mise.toml` pins the toolchain and defines the same commands as tasks, so with
-[mise](https://mise.jdx.dev) installed, `mise run ci` runs what the pipeline
-runs.
+The order of the two modules does not matter.
 
-## The example application
+## Use
 
-`example/` holds a Drupal 11 backend and a Nuxt application that loads the
-module. `npm run example:setup` provisions the backend without Docker, on
-SQLite, with PHP 8.3 or later and Composer on the host; the dev container has
-both. The end-to-end and visual tests run against the generated example. See
-`example/README.md`.
+```vue
+<template>
+  <DruxtCkeditor v-model="body" format="basic_html" />
+</template>
+```
 
-## Things worth knowing before you change them
+The component renders a `<textarea>` bound to `v-model` until the editor is
+created, and keeps it if the editor never is. It emits:
 
-**The coverage floor goes up, never down.** It is measured from the current
-tests, not aspirational. If a change drops coverage, the change needs a test.
+| Event   | When                                                                        |
+| ------- | --------------------------------------------------------------------------- |
+| `input` | The value changed, as the HTML Drupal would store                           |
+| `ready` | The editor was created; the argument is the editor                          |
+| `error` | The scripts did not load or the editor did not start; once, with the reason |
+| `hold`  | An image was inserted with nowhere to send it; `{ file, dataUrl }`          |
 
-**Never regenerate visual baselines locally.** Use the manual `visual:update`
-pipeline job. Chromium renders differently on ARM, so a baseline generated on an
-Apple silicon machine is a permanent false diff for everyone else.
+Props:
 
-**Title your pull requests like commits.** This repository squash-merges, so the
-title becomes the commit subject. A prose title passes review and then breaks
-the next push to the target branch.
+| Prop             | Default      | What it does                                                            |
+| ---------------- | ------------ | ----------------------------------------------------------------------- |
+| `value`          | `''`         | The stored HTML                                                         |
+| `format`         | `basic_html` | The Drupal text format, which picks the toolbar and the filters         |
+| `upload`         | `null`       | `{ resourceType, field }` naming where an inserted image's bytes go     |
+| `backendUrl`     | `null`       | The backend serving content files, when it is not the Druxt base URL    |
+| `toolbar`        | `null`       | An explicit toolbar, which wins over every lookup                       |
+| `filters`        | `null`       | The filters the format runs, which wins over every lookup               |
+| `viewportOffset` | `0`          | How far down the page the editor treats as the top, for a pinned header |
 
-**Nothing private in a tracked file.** This repository is public.
-`npm run lint:private` fails on a URL that only resolves on a private network,
-and runs in CI.
+## Options
+
+Under `druxt.ckeditor` in `nuxt.config.js`:
+
+| Option          | Default                                                      | What it does                                                                                    |
+| --------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| `scripts`       | `null`                                                       | Where the scripts are. `null` means the backend's own copy, under the Druxt base URL. See below |
+| `copy`          | `false`                                                      | Serve the scripts from the site's own origin. See below                                         |
+| `packages`      | the sixteen packages Drupal's toolbar vocabulary can ask for | The CKEditor packages to load, by Drupal's names                                                |
+| `files`         | `{ from: '/sites/default/files/', to: null }`                | Where a body image's path is rewritten to for the editor. `null` means the backend's copy       |
+| `toolbars`      | `{}`                                                         | A toolbar per format, used when Drupal's configuration cannot be read                           |
+| `filters`       | `{}`                                                         | The filters per format, used when Drupal's configuration cannot be read                         |
+| `image.toolbar` | alt text, caption, three styles                              | What a selected image offers                                                                    |
+| `timeout`       | `15000`                                                      | Milliseconds to wait for each script                                                            |
+
+Everything is also on `this.$druxtCkeditor`: `options`, `scripts()`,
+`files()`, `backendUrl()` and `load()`, which resolves to the `CKEditor5`
+namespace or `null`.
+
+## Exports
+
+The supported surface is the `DruxtCkeditor` component, the Nuxt module (the
+package's default export), and the `$druxtCkeditor` plugin. The package also
+exports the functions these are built from, so a built component can import
+them by name. Those are internal: shared between this module's own files,
+not an API to build against, and they can change in any release.
+
+## Script sources
+
+Three sources, and the difference is what happens when the backend is not
+reachable from the browser.
+
+1. **The backend**, the default. Scripts load from
+   `<druxt.baseUrl>/core/assets/vendor/ckeditor5`. Nothing to install, and
+   the editor is exactly Drupal's. The editor is a textarea whenever the
+   backend is down, private, or not there at all.
+2. **Another host.** Set `scripts` to a URL. The files there have to be in
+   Drupal's layout: `<scripts>/ckeditor5-dll/ckeditor5-dll.js`, then
+   `<scripts>/<package>/<package>.js`. A CDN, or a copy of the backend's
+   directory on the frontend's own host.
+3. **The site's own origin.** Set `copy`. The module serves the files at
+   `/ckeditor5` during `nuxt dev` and `nuxt start`, and copies them into the
+   output of `nuxt generate`, so a static site includes its own editor and
+   works with no backend at all. `copy: true` reads the application's
+   `node_modules`, so install the packages:
+
+   ```sh
+   npm install ckeditor5 @ckeditor/ckeditor5-editor-classic @ckeditor/ckeditor5-essentials ...
+   ```
+
+   one `@ckeditor/ckeditor5-<package>` per name in `packages`, at the version
+   the backend's Drupal version includes. Drupal 11.2 includes CKEditor 5 v45;
+   check `core/core.libraries.yml` on the backend. A string is a directory
+   already in Drupal's layout, resolved against the application's root, such
+   as a backend checkout's `web/core/assets/vendor/ckeditor5`, and needs
+   nothing installed. A package that cannot be found is a warning at build
+   time, naming the package, and the editor loads without it.
+
+## What happens with no backend
+
+The editor still mounts when the scripts come from somewhere else, and the
+toolbar is still Drupal's when a page's `fetch()` dispatched
+`druxt/getCollection` for `editor--editor` at generate time, because the
+payload carries it. Reading `editor--editor` and
+`filter_format--filter_format` needs both ticked in the Druxt module's
+resource list on the backend, and `access druxt resources` for whoever asks.
+Where they cannot be read, `toolbars` and `filters` in the options answer,
+and after them the built-in toolbar. An inserted image is uploaded over
+JSON:API through the Druxt client. With the `druxt-auth` module installed the
+request carries the signed-in session's bearer token, refreshed when it
+expires. Without a session the image is held as a data URL and reported
+through `hold`, and the editor still edits, so nothing is lost. `druxt-auth`
+is not a dependency of this module: the authentication is picked up at runtime
+when it is present.
+
+## Example
+
+`example/` is a Drupal 11 backend and a Nuxt application that mounts the
+editor on `basic_html`, with `copy` pointing at the backend checkout so the
+generated site doesn't need a backend. `npm run example:setup` builds it.
 
 ## Licence
 
-[MIT](LICENSE)
+MIT.

@@ -10,9 +10,8 @@ starts from.
 npm install
 ```
 
-That installs dependencies and enables the git hooks. If you skipped install
-scripts, run `npm run hooks:install` by hand, or the hooks stay on disk doing
-nothing.
+That installs dependencies. Enable the git hooks with `npm run hooks:install`,
+or they stay on disk doing nothing.
 
 The toolchain is pinned in `.mise.toml`. With [mise](https://mise.jdx.dev)
 installed, `mise install` gives you the same Node the pipeline uses.

@@ -1,4 +1,4 @@
-name: druxt-module-template
+name: druxt-ckeditor
 type: drupal
 docroot: web
 php_version: "8.4"

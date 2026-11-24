@@ -26,7 +26,7 @@ require_once __DIR__ . '/helpers.php';
 // Variables.
 // -----------------------------------------------------------------------------
 
-$db_file = resolve_env_value('DB_FILE', '/tmp/druxt-module-template-drupal-site.sqlite')[0];
+$db_file = resolve_env_value('DB_FILE', '/tmp/druxt-ckeditor-drupal-site.sqlite')[0];
 
 // -----------------------------------------------------------------------------
 
@@ -66,7 +66,7 @@ file_put_contents('web/sites/default/settings.local.php', sprintf(
 PASS('SQLite database configured.');
 
 TASK('Running drush site:install standard.');
-drush('site:install standard --site-name=%s', 'druxt-module-template');
+drush('site:install standard --site-name=%s', 'druxt-ckeditor');
 PASS('Site installed.');
 
 // Drupal 11's `standard` profile no longer creates content types itself -
@@ -84,7 +84,13 @@ PASS('Content types applied.');
 TASK('Enabling the druxt module.');
 drush('pm:enable druxt');
 drush('role:perm:add anonymous %s', 'access druxt resources');
-PASS('druxt enabled; anonymous can access Druxt resources.');
+// The editor reads a format's toolbar from `editor--editor` and its filters
+// from `filter_format--filter_format`. Neither is in the Druxt module's
+// default resource list, and the list is validated as a whole, so it is
+// read, extended and written back rather than set.
+drush('php:eval %s', '$config = \Drupal::configFactory()->getEditable("druxt.settings"); $resources = $config->get("resources") ?: []; foreach (["editor--editor", "filter_format--filter_format"] as $type) { if (!in_array($type, $resources, TRUE)) { $resources[] = $type; } } $config->set("resources", $resources)->save();');
+drush('cache:rebuild');
+PASS('druxt enabled; anonymous can access Druxt resources, editors and formats included.');
 
 echo PHP_EOL;
 echo '===============================' . PHP_EOL;

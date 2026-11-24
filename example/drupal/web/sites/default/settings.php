@@ -770,7 +770,7 @@ if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
   include $app_root . '/' . $site_path . '/settings.local.php';
 }
 $databases['default']['default'] = array (
-  'database' => '/tmp/druxt-module-template-drupal-site.sqlite',
+  'database' => '/tmp/druxt-ckeditor-drupal-site.sqlite',
   'prefix' => '',
   'driver' => 'sqlite',
   'namespace' => 'Drupal\\sqlite\\Driver\\Database\\sqlite',

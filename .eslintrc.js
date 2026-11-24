@@ -3,7 +3,7 @@ module.exports = {
   // checkout inside another workspace inherits that workspace's rules, which is
   // exactly how a submodule ends up linted by its parent's configuration.
   root: true,
-  env: { browser: true, es6: true, node: true },
+  env: { browser: true, es6: true, es2020: true, node: true },
   parserOptions: { ecmaVersion: 2022, sourceType: 'module' },
   extends: [
     'eslint:recommended',
