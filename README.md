@@ -142,6 +142,15 @@ when it is present.
 editor on `basic_html`, with `copy` pointing at the backend checkout so the
 generated site doesn't need a backend. `npm run example:setup` builds it.
 
+## More documentation
+
+These pages are also published as a [documentation
+site](https://contrib.druxtjs.org/druxt-ckeditor/).
+
+- [Drupal setup](docs/drupal-setup.md), the resource list, the text format and
+  the field an upload goes through
+- [Troubleshooting](docs/troubleshooting.md)
+
 ## Licence
 
 MIT.
